@@ -13,6 +13,8 @@ export const createUserController = async (req, res) => {
     try {
         const user = await userService.createUser(req.body);
         const token = await user.generateJWT();
+
+        delete user._doc.password;
         res.status(201).json({user , token});
 
     } catch (error) {
@@ -38,6 +40,8 @@ export const loginController = async (req, res) => {
             return res.status(401).json({ errors: 'invalid credentials' });
         }
         const token = await user.generateJWT();
+
+        delete user._doc.password; 
         res.status(200).json({ user, token });
 
 

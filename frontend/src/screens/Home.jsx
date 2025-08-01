@@ -1,11 +1,15 @@
-import React, { useContext } from 'react'
+import React, { use, useContext , useEffect , useState } from 'react'
 import { UserContext } from '../context/user.context'
 import axios from '../config/axios';
+import { useNavigate } from 'react-router-dom';
+
 
 const Home = () => {
   const { user } = useContext(UserContext);
-  const [isModalOpen, setIsModalOpen] = React.useState(false);
-  const [projectName, setProjectName] = React.useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [projectName, setProjectName] = useState(null);
+  const [project, setProject] = useState([]);
+  const navigate = useNavigate();
 
   function createProject(e) {
     e.preventDefault();
@@ -19,14 +23,37 @@ const Home = () => {
       console.error(err);
     })
   }
+
+  useEffect(() =>{
+    axios.get('/projects/all').then((res) => {
+      setProject(res.data.projects);
+    }).catch((err) => {
+      console.error(err);
+    })
+  } , []);
   return (
 
     <main className='p-4 '>
 
-      <div className="projects">
+      <div className="projects flex flex-wrap gap-4" >
         <button className="project border-2 p-2 rounded-3xl cursor-pointer" onClick={() =>{setIsModalOpen(true)}}> NEW PROJECT
           <i className="ri-link ml-2"></i>
         </button>
+        {
+          project.map((project) => (
+            <div key={project._id} 
+            onClick={() => { navigate(`/project`,{
+              state : {project}
+            }) }}
+            className="project border-2 p-2 rounded-3xl cursor-pointer min-w-52 hover:bg-gray-500">
+              <h3 className="text-lg font-semibold">{project.name}</h3>
+              <div className="flex flex-wrap gap-4"> 
+                <p><i className="ri-user-line"></i> <small>Collaborators :</small> </p>
+                {project.users.length}
+              </div>
+            </div>
+          ))
+        }
       </div>
 
       {isModalOpen && (

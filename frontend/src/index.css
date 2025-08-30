@@ -1,1 +1,24 @@
 @import 'tailwindcss';
+/* You might add this to your main CSS file or global styles */
+.custom-scrollbar::-webkit-scrollbar {
+    width: 10px;
+    height: 10px; /* For horizontal scrollbars */
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+    background: #2d3748; /* bg-gray-800 */
+    border-radius: 5px;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+    background: #5a67d8; /* bg-indigo-600 */
+    border-radius: 5px;
+}
+.custom-scrollbar-horizontal::-webkit-scrollbar {
+    height: 8px;
+}
+.custom-scrollbar-horizontal::-webkit-scrollbar-track {
+    background: #2d3748;
+}
+.custom-scrollbar-horizontal::-webkit-scrollbar-thumb {
+    background: #5a67d8;
+    border-radius: 4px;
+}

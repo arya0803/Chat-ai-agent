@@ -1,82 +1,78 @@
-import React , {useState , useContext} from 'react';
-import { Link , useNavigate } from 'react-router-dom';
-import axios from '../config/axios';
-import { UserContext } from '../context/user.context';
+import React, { useState, useContext } from 'react';
+import axios from 'axios';
+import { useNavigate, Link } from 'react-router-dom';
+import { UserContext } from '../context/user.context'; // Assuming UserContext is defined
 
-
-const Register = () => {
-
+function Register() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const [confirmPassword, setConfirmPassword] = useState('');
-    const {setUser} = useContext(UserContext);
     const navigate = useNavigate();
+    const { setUser } = useContext(UserContext);
 
-    function submitHandler(e) {
+    const submitHandler = async (e) => {
         e.preventDefault();
-
-        axios.post('/users/register', {
-            email,password, confirmPassword
-        }).then((res) => {  
-            console.log(res.data);
-            localStorage.setItem('token', res.data.token);
-            setUser(res.data.user);
+        try {
+            const { data } = await axios.post('/users/register', { email, password });
+            localStorage.setItem('token', data.token);
+            setUser(data.user); // Assuming data.user contains user info
             navigate('/');
-        }).catch((err) => {
-            console.error('Registration failed:', err);
-        });
-    }
+        } catch (error) {
+            console.error('Registration failed:', error.response?.data?.message || error.message);
+            alert('Registration failed. Please try again.'); // User-friendly error
+        }
+    };
 
- 
-
-return (
-    <div
-        className="min-h-screen flex items-center justify-center text-white"
-        style={{
-            background: "linear-gradient(135deg, #3a8dde 0%, #6dd5ed 50%, #f7797d 100%)"
-        }}
-    >
-        <div className="bg-white p-8 rounded-2xl shadow-xl w-full max-w-md">
-            <h2 className="text-3xl font-bold text-center text-blue-700 mb-6">Register</h2>
-
-            <form className="space-y-5" onSubmit={submitHandler}>
-                <div>
-                    <label className="block text-sm font-medium text-blue-900">Email</label>
-                    <input
-                        onChange={(e) => setEmail(e.target.value)}
-                        type="email"
-                        placeholder="you@example.com"
-                        className="w-full mt-1 px-4 py-2 rounded-lg bg-blue-50 text-blue-900 border border-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-400"
-                    />
-                </div>
-
-                <div>
-                    <label className="block text-sm font-medium text-blue-900">Password</label>
-                    <input
-                        onChange={(e) => setPassword(e.target.value)}
-                        type="password"
-                        placeholder="********"
-                        className="w-full mt-1 px-4 py-2 rounded-lg bg-blue-50 text-blue-900 border border-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-400"
-                    />
-                </div>
-
-                <button
-                    type="submit"
-                    className="w-full bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 hover:from-blue-600 hover:to-pink-600 text-white font-semibold py-2 rounded-lg transition duration-300"
-                >
-                    Register
-                </button>
-            </form>
-
-            <p className="mt-6 text-center text-sm text-blue-700">
-                Already have an account?{' '}
-                <Link to="/login" className="text-purple-600 hover:underline font-semibold">
-                    Login
-                </Link>
-            </p>
+    return (
+        <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-indigo-900 via-purple-900 to-pink-900 p-4">
+            <div className="bg-white bg-opacity-10 backdrop-filter backdrop-blur-lg rounded-xl shadow-2xl p-8 w-full max-w-md border border-white border-opacity-20 transform transition-all duration-300 hover:scale-105">
+                <h2 className="text-4xl font-extrabold text-white mb-8 text-center drop-shadow-lg animate-pulse">
+                    Join Our Codeverse!
+                </h2>
+                <form onSubmit={submitHandler} className="space-y-6">
+                    <div>
+                        <label htmlFor="email" className="block text-lg font-medium text-purple-200 mb-2">
+                            Email
+                        </label>
+                        <input
+                            type="email"
+                            id="email"
+                            className="w-full px-4 py-3 rounded-lg bg-gray-800 bg-opacity-70 text-white placeholder-gray-400 border border-purple-500 focus:ring-4 focus:ring-purple-400 focus:border-transparent outline-none transition duration-300"
+                            placeholder="Your email"
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                            required
+                        />
+                    </div>
+                    <div>
+                        <label htmlFor="password" className="block text-lg font-medium text-purple-200 mb-2">
+                            Password
+                        </label>
+                        <input
+                            type="password"
+                            id="password"
+                            className="w-full px-4 py-3 rounded-lg bg-gray-800 bg-opacity-70 text-white placeholder-gray-400 border border-purple-500 focus:ring-4 focus:ring-purple-400 focus:border-transparent outline-none transition duration-300"
+                            placeholder="Strong password"
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                            required
+                        />
+                    </div>
+                    <button
+                        type="submit"
+                        className="w-full py-3 px-6 rounded-lg text-white font-bold text-lg bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 focus:outline-none focus:ring-4 focus:ring-purple-500 transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl"
+                    >
+                        Register
+                    </button>
+                </form>
+                <p className="text-center text-gray-300 text-md mt-6">
+                    Already have an account?{' '}
+                    <Link to="/login" className="text-indigo-400 hover:text-indigo-300 font-semibold transition duration-300">
+                        Login here!
+                    </Link>
+                </p>
+            </div>
         </div>
-    </div>
-);
-};
+    );
+}
 
 export default Register;

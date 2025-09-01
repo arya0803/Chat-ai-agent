@@ -11,9 +11,9 @@ export default defineConfig({
   server: {
     // The proxy configuration must be inside the 'server' object
     proxy: {
-      '/users': 'https://agent-kauc.onrender.com',
-      '/projects': 'https://agent-kauc.onrender.com',
-      '/socket.io': 'https://agent-kauc.onrender.com',
+      '/users': 'http://localhost:3000',
+      '/projects': 'http://localhost:3000',
+      '/socket.io': 'http://localhost:3000',
     },
     headers: {
       'Cross-Origin-Opener-Policy': 'same-origin',

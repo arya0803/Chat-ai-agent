@@ -10,7 +10,7 @@ connect();
 
 const app = express();
 
-const frontendURL = 'http://agent-8t7d.vercel.app';
+const frontendURL = 'https://agenthere.vercel.app/';
 
 app.use(cors({
     origin: frontendURL,

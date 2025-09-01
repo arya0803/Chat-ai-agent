@@ -7,14 +7,12 @@ import mongoose from 'mongoose';
 import projectModel from './models/project.model.js';
 import { generateResult } from './services/ai.service.js';
 
-const frontendURL = 'http://agent-8t7d.vercel.app';
+const frontendURL = 'https://agenthere.vercel.app';
 const port = process.env.PORT || 3000;
 const server = http.createServer(app);
 const io = new Server(server, {
     cors: {
         origin: frontendURL,
-        methods: ['GET', 'POST'],
-        credentials: true
     }
 });
 

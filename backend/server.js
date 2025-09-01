@@ -12,7 +12,9 @@ const port = process.env.PORT || 3000;
 const server = http.createServer(app);
 const io = new Server(server, {
     cors: {
-        origin: '*'
+        origin: 'http://agent-8t7d.vercel.app',
+        methods: ['GET', 'POST'],
+        credentials: true
     }
 });
 

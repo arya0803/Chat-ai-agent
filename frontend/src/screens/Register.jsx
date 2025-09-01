@@ -25,8 +25,8 @@ function Register() {
     return (
         <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-indigo-900 via-purple-900 to-pink-900 p-4">
             <div className="bg-white bg-opacity-10 backdrop-filter backdrop-blur-lg rounded-xl shadow-2xl p-8 w-full max-w-md border border-white border-opacity-20 transform transition-all duration-300 hover:scale-105">
-                <h2 className="text-4xl font-extrabold text-white mb-8 text-center drop-shadow-lg animate-pulse">
-                    Join Our Codeverse!
+                <h2 className="text-4xl font-extrabold text-fuchsia-700 mb-8 text-center drop-shadow-lg animate-pulse">
+                    Create Account
                 </h2>
                 <form onSubmit={submitHandler} className="space-y-6">
                     <div>

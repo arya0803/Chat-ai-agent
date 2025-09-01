@@ -40,7 +40,7 @@ const Home = () => {
         <div className="min-h-screen bg-gradient-to-br from-gray-900 via-indigo-900 to-purple-900 text-white p-6 sm:p-10">
             <header className="flex justify-between items-center mb-10 pb-4 border-b border-purple-700">
                 <h1 className="text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-green-400 to-blue-500 drop-shadow-lg">
-                    Your Code Projects
+                    Your Projects
                 </h1>
                 <button
                     onClick={() => setIsModalOpen(true)}

@@ -5,7 +5,7 @@ import axios from '../config/axios'
 import { initializeSocket, receiveMessage, sendMessage } from '../config/socket'
 import Markdown from 'markdown-to-jsx'
 import hljs from 'highlight.js';
-import { getWebContainer } from '../config/webcontainer'
+import { getWebContainer } from '@/config/webcontainer'
 import {
     FaBars,
     FaTerminal,
@@ -202,9 +202,7 @@ const Project = () => {
                     <h3 className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500">
                         <FaUsers className="inline-block mr-2" /> Collaborators & Chat
                     </h3>
-                    <button onClick={() => setIsSidePanelOpen(!isSidePanelOpen)} className="text-gray-400 hover:text-white transition-colors duration-200">
-                        <FaTimes className="text-xl" />
-                    </button>
+
                 </div>
 
                 <div className='flex-1 flex flex-col p-4 overflow-y-auto custom-scrollbar'>

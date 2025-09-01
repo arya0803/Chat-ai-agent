@@ -7,10 +7,8 @@ import mongoose from 'mongoose';
 import projectModel from './models/project.model.js';
 import { generateResult } from './services/ai.service.js';
 
+
 const port = process.env.PORT || 3000;
-
-
-
 const server = http.createServer(app);
 const io = new Server(server, {
     cors: {
@@ -52,7 +50,6 @@ io.use(async (socket, next) => {
     } catch (error) {
         next(error)
     }
-
 })
 
 
@@ -72,15 +69,26 @@ io.on('connection', socket => {
 
             const prompt = message.replace('@ai', '');
 
-            const result = await generateResult(prompt);
+            try {
+                const result = await generateResult(prompt);
 
-            io.to(socket.roomId).emit('project-message', {
-                message: result,
-                sender: {
-                    _id: 'ai',
-                    email: 'AI'
-                }
-            })
+                io.to(socket.roomId).emit('project-message', {
+                    message: result,
+                    sender: {
+                        _id: 'ai',
+                        email: 'AI'
+                    }
+                });
+            } catch (error) {
+                console.error('Error generating AI result:', error);
+                io.to(socket.roomId).emit('project-message', {
+                    message: 'An error occurred while processing the AI response.',
+                    sender: {
+                        _id: 'ai',
+                        email: 'AI'
+                    }
+                });
+            }
 
 
             return

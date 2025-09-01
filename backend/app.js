@@ -8,10 +8,13 @@ import cookieParser from 'cookie-parser';
 import cors from 'cors';
 connect();
 
-
 const app = express();
 
-app.use(cors());
+const frontendURL = 'http://agent-8t7d.vercel.app';
+
+app.use(cors({
+    origin: frontendURL,
+}));
 app.use(morgan('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));

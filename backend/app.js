@@ -31,6 +31,6 @@ app.use((req, res, next) => {
 
 
 app.get('/', (req, res) => {
-    res.send('Hello World!');
+    res.send('hii');
 });
 export default app; 

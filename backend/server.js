@@ -8,11 +8,13 @@ import projectModel from './models/project.model.js';
 import { generateResult } from './services/ai.service.js';
 
 
+
+
 const port = process.env.PORT || 3000;
 const server = http.createServer(app);
 const io = new Server(server, {
     cors: {
-        origin: 'https://agenthere.vercel.app'
+        origin: '*'
     }
 });
 

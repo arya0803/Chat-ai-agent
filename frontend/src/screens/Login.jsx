@@ -1,31 +1,49 @@
 import React, { useState, useContext } from 'react';
-import axios from 'axios';
-import { useNavigate, Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import axios from '../config/axios.js'; // Assuming this is your configured axios instance
 import { UserContext } from '../context/user.context';
 
 function Login() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [loginError, setLoginError] = useState('');
     const navigate = useNavigate();
     const { setUser } = useContext(UserContext);
 
-    const submitHandler = async (e) => {
+    function submitHandler(e) {
         e.preventDefault();
-        try {
-            const { data } = await axios.post('/users/login', { email, password });
-            localStorage.setItem('token', data.token);
-            setUser(data.user);
+        setLoginError(''); // Clear any previous errors
+
+        axios.post('/users/login', {
+            email,
+            password
+        }).then((res) => {
+            console.log(res.data);
+            localStorage.setItem('token', res.data.token);
+            setUser(res.data.user);
             navigate('/');
-        } catch (error) {
-            console.error('Login failed:', error.response?.data?.message || error.message);
-            alert('Login failed. Please check your credentials.');
-        }
-    };
+        }).catch((err) => {
+            console.log(err.response.data);
+            const errorMessage = err.response?.data?.message || 'Login failed. Please check your credentials.';
+            setLoginError(errorMessage);
+        });
+    }
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-indigo-900 via-blue-900 to-green-900 p-4">
-            <div className="bg-white bg-opacity-10 backdrop-filter backdrop-blur-lg rounded-xl shadow-2xl p-8 w-full max-w-md border border-white border-opacity-20 transform transition-all duration-300 hover:scale-105">
-                <h2 className="text-4xl font-extrabold text-cyan-600 mb-8 text-center drop-shadow-lg animate-pulse">
+        <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-indigo-900 via-blue-900 to-green-900 p-4 font-sans">
+            <style>
+                {`
+                @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap');
+                body {
+                    font-family: 'Inter', sans-serif;
+                }
+                .custom-placeholder::placeholder {
+                    color: rgba(255, 255, 255, 0.5);
+                }
+                `}
+            </style>
+            <div className="bg-white bg-opacity-10 backdrop-filter backdrop-blur-lg rounded-2xl shadow-2xl p-8 w-full max-w-md border border-white border-opacity-20 transform transition-all duration-300 hover:scale-105">
+                <h2 className="text-4xl font-extrabold text-cyan-400 mb-8 text-center drop-shadow-lg animate-pulse">
                     Welcome Back!
                 </h2>
                 <form onSubmit={submitHandler} className="space-y-6">
@@ -36,7 +54,7 @@ function Login() {
                         <input
                             type="email"
                             id="email"
-                            className="w-full px-4 py-3 rounded-lg bg-gray-800 bg-opacity-70 text-white placeholder-gray-400 border border-blue-500 focus:ring-4 focus:ring-blue-400 focus:border-transparent outline-none transition duration-300"
+                            className="w-full px-4 py-3 rounded-lg bg-gray-800 bg-opacity-70 text-white custom-placeholder border border-blue-500 focus:ring-4 focus:ring-blue-400 focus:border-transparent outline-none transition duration-300"
                             placeholder="Your email"
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
@@ -50,13 +68,18 @@ function Login() {
                         <input
                             type="password"
                             id="password"
-                            className="w-full px-4 py-3 rounded-lg bg-gray-800 bg-opacity-70 text-white placeholder-gray-400 border border-blue-500 focus:ring-4 focus:ring-blue-400 focus:border-transparent outline-none transition duration-300"
+                            className="w-full px-4 py-3 rounded-lg bg-gray-800 bg-opacity-70 text-white custom-placeholder border border-blue-500 focus:ring-4 focus:ring-blue-400 focus:border-transparent outline-none transition duration-300"
                             placeholder="Your password"
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
                             required
                         />
                     </div>
+                    {loginError && (
+                        <div className="text-center text-red-300 font-semibold text-sm animate-fade-in">
+                            {loginError}
+                        </div>
+                    )}
                     <button
                         type="submit"
                         className="w-full py-3 px-6 rounded-lg text-white font-bold text-lg bg-gradient-to-r from-blue-600 to-green-600 hover:from-blue-700 hover:to-green-700 focus:outline-none focus:ring-4 focus:ring-blue-500 transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl"

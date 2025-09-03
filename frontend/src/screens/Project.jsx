@@ -22,7 +22,8 @@ import {
     FaSave,
     FaSpinner,
     FaWifi,
-    FaExclamationTriangle
+    FaExclamationTriangle,
+    FaPaperPlane
 } from 'react-icons/fa';
 
 function SyntaxHighlightedCode(props) {
@@ -31,8 +32,6 @@ function SyntaxHighlightedCode(props) {
     React.useEffect(() => {
         if (ref.current && props.className?.includes('lang-') && window.hljs) {
             window.hljs.highlightElement(ref.current)
-
-            // hljs won't reprocess the element unless this attribute is removed
             ref.current.removeAttribute('data-highlighted')
         }
     }, [props.className, props.children])
@@ -41,17 +40,16 @@ function SyntaxHighlightedCode(props) {
 }
 
 const Project = () => {
-
     const location = useLocation()
     const [isSidePanelOpen, setIsSidePanelOpen] = useState(false)
     const [isModalOpen, setIsModalOpen] = useState(false)
-    const [selectedUserId, setSelectedUserId] = useState(new Set()) // Initialized as Set
+    const [selectedUserId, setSelectedUserId] = useState(new Set())
     const [project, setProject] = useState(location.state.project)
     const [message, setMessage] = useState('')
     const { user } = useContext(UserContext)
-    const messageBox = React.createRef()
+    const messageBox = useRef(null)
     const [users, setUsers] = useState([])
-    const [messages, setMessages] = useState([]) // New state variable for messages
+    const [messages, setMessages] = useState([])
     const [fileTree, setFileTree] = useState({})
     const [currentFile, setCurrentFile] = useState(null)
     const [openFiles, setOpenFiles] = useState([])
@@ -85,11 +83,14 @@ const Project = () => {
     }
 
     const send = () => {
+        if (message.trim() === "") {
+            return;
+        }
         sendMessage('project-message', {
             message,
             sender: user
         })
-        setMessages(prevMessages => [...prevMessages, { sender: user, message }]) // Update messages state
+        setMessages(prevMessages => [...prevMessages, { sender: user, message }])
         setMessage("")
     }
 
@@ -130,9 +131,9 @@ const Project = () => {
                 if (message.fileTree) {
                     setFileTree(message.fileTree || {})
                 }
-                setMessages(prevMessages => [...prevMessages, data]) // Update messages state
+                setMessages(prevMessages => [...prevMessages, data])
             } else {
-                setMessages(prevMessages => [...prevMessages, data]) // Update messages state
+                setMessages(prevMessages => [...prevMessages, data])
             }
         })
 
@@ -147,7 +148,6 @@ const Project = () => {
         }).catch(err => {
             console.log(err)
         })
-
     }, [])
 
     function saveFileTree(ft) {
@@ -168,14 +168,12 @@ const Project = () => {
     return (
         <div className="flex h-screen bg-gradient-to-br from-gray-900 via-blue-900 to-indigo-900 text-white overflow-hidden">
             {/* Sidebar / File Explorer */}
-           
-
+            
             {/* Main Content Area */}
             <main className="flex-1 flex flex-col">
                 {/* Top Bar */}
                 <div className="bg-gray-800 border-b border-indigo-700 p-3 flex justify-between items-center shadow-lg">
                     <div className="flex items-center space-x-4">
-                       
                         <button onClick={() => navigate('/')} className="p-2 rounded-full bg-indigo-600 hover:bg-indigo-700 text-white transition-colors duration-200 flex items-center space-x-2 shadow-md">
                             <FaArrowLeft /> <span className="hidden sm:inline">Back to Projects</span>
                         </button>
@@ -184,7 +182,6 @@ const Project = () => {
                         </h1>
                     </div>
                     <div className="flex items-center space-x-4">
-                        
                         <button
                             onClick={() => setIsModalOpen(true)}
                             className="flex items-center space-x-2 px-4 py-2 rounded-full bg-purple-600 hover:bg-purple-700 text-white font-semibold transition-all duration-300 transform hover:scale-105 shadow-md"
@@ -194,15 +191,11 @@ const Project = () => {
                     </div>
                 </div>
 
-                {/* Editor & Preview Area */}
-               
-
                 {/* Chat and Collaborators Sidebar */}
                 <div className='p-4 border-b border-indigo-700 flex justify-between items-center'>
                     <h3 className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500">
                         <FaUsers className="inline-block mr-2" /> Collaborators & Chat
                     </h3>
-
                 </div>
 
                 <div className='flex-1 flex flex-col p-4 overflow-y-auto custom-scrollbar'>
@@ -221,14 +214,27 @@ const Project = () => {
                                 </div>
                             ))}
                         </div>
-                        <div className="inputField w-full flex absolute bottom-0">
+
+                        {/* Updated Message Input Field */}
+                        <div className="inputField w-full flex relative items-center">
                             <input
                                 value={message}
                                 onChange={(e) => setMessage(e.target.value)}
-                                className='p-2 px-4 border-none outline-none flex-grow text-black' type="text" placeholder='Enter message' />
+                                onKeyDown={(e) => {
+                                    if (e.key === 'Enter') {
+                                        send();
+                                    }
+                                }}
+                                className='flex-grow p-4 pr-16 text-white bg-gray-800 border-none rounded-md outline-none focus:ring-2 focus:ring-green-500 shadow-md placeholder-gray-400'
+                                type="text"
+                                placeholder='Type your message here...'
+                            />
                             <button
                                 onClick={send}
-                                className='px-5 bg-slate-950 text-white'><i className="ri-send-plane-fill"></i></button>
+                                className='absolute right-4 p-2 text-gray-400 hover:text-green-400 transition-colors duration-200'
+                            >
+                                <FaPaperPlane size={24} />
+                            </button>
                         </div>
                     </div>
                 </div>
